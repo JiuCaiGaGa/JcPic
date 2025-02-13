@@ -1,0 +1,41 @@
+server:
+  port: 8123 # 服务启动端口号
+  servlet:
+    context-path: /api #上下文路径
+spring:
+  application: # 指定Spring 应用的配置信息
+    name: JcPic_backend
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver # MySQL8 版本
+    #    driver-class-name: com.mysql.jdbc.Driver # MySQL5 版本
+    url: jdbc:mysql://localhost:3306/jcPic # 数据库地址
+    username: root
+    password: 123456
+
+
+mybatis-plus: # Mybatis Plus 配置信息
+  configuration:
+    # MyBatis 配置
+    map-underscore-to-camel-case: false # 取消下划线转驼峰
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 开发环境下 打印日志 FIXME
+  global-config:
+    # 全局配置
+    db-config:
+      # 逻辑删除配置
+      logic-delete-field: isDeleted # 逻辑删除字段
+      logic-delete-value: 1 # 设置 1 为 逻辑删除值
+      logic-not-delete-value: 0 # 0 没删
+
+
+knife4j: # 接口文档
+  enable: true
+  openapi:
+    title: JC_PIC 开发环境接口文档
+    description: "采用 openAPI2 的接口使用规范"
+    version: v0.01
+    group:
+      default:
+      #        group-name: 默认分组名称 # 不注释会导致 openapi 获取后端接口失败 原因：参数缺失
+        api-rule: package
+        api-rule-resources:
+          - com.jcgg.jcpic_backend.controller
