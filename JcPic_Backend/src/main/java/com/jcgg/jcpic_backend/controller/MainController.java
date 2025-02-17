@@ -16,11 +16,4 @@ public class MainController {
     public BaseResponse<String> health(){// 项目健康检查
         return ResultUtils.success("ok");
     }
-
-    @GetMapping("/test")
-    public BaseResponse<String> test(){
-//        System.out.println(1/0);
-//        return BaseResponse<>
-        return ResultUtils.success("你好");
-    }
 }

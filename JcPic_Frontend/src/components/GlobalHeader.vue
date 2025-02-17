@@ -1,7 +1,7 @@
 <template>
   <div id="globalHeader">
     <a-row :wrap="false">
-      <a-col flex="80px">
+      <a-col flex="140px">
         <router-link to="/">
           <div id="titleBar" class="titleBar">
             <img class="logo" src="../assets/logo.png" alt="JcPic" />
@@ -22,7 +22,7 @@
           <div v-if="loginUserStore.loginUser.id">
             {{ loginUserStore.loginUser.username ?? '佚名' }}
           </div>
-          <div v-else >
+          <div v-else>
             <a-button href="/user/login" type="primary">登录</a-button>
           </div>
         </div>
@@ -37,8 +37,7 @@ import { MenuProps } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 
-const loginUserStore = useLoginUserStore();
-loginUserStore.fetchLoginUser();
+const loginUserStore = useLoginUserStore()
 
 const items = ref<MenuProps['items']>([
   {
@@ -71,17 +70,18 @@ const router = useRouter()
  */
 
 const doMenuClick = ({ key }) => {
-  if(key !== 'JcGithub'){
+  if (key !== 'JcGithub') {
     router.push({ path: key })
   }
 }
+
+/**
+ * 高亮的菜单项
+ */
 const current = ref<string[]>([])
 router.afterEach((to, from, next) => {
   current.value = [to.path]
 })
-
-
-
 </script>
 
 <style scoped>
