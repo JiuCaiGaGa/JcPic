@@ -10,7 +10,6 @@ import com.jcgg.jcpic_backend.exception.ErrorCode;
 import com.jcgg.jcpic_backend.exception.ThrowUtils;
 import com.jcgg.jcpic_backend.model.dto.user.*;
 import com.jcgg.jcpic_backend.model.entity.User;
-import com.jcgg.jcpic_backend.model.enums.UserRoleEnum;
 import com.jcgg.jcpic_backend.model.vo.LoginUserVO;
 import com.jcgg.jcpic_backend.model.vo.UserVO;
 import com.jcgg.jcpic_backend.service.UserService;
@@ -105,9 +104,8 @@ public class UserController {
 
     /**
      * 用户添加
-     *
-     * @param userAddRequest
-     * @return
+     * @param userAddRequest 用户添加请求
+     * @return ID
      */
     @PostMapping("/add")
     @AuthCheck(mustRole = "admin")
@@ -128,7 +126,7 @@ public class UserController {
                 !result,
                 ErrorCode.OPERATION_ERROR
         );
-        return ResultUtils.success(result);
+        return ResultUtils.success(true);
     }
 
     /**
@@ -218,7 +216,7 @@ public class UserController {
                 userService.getQueryWrapper(queryRequest)
         );
 
-        Page<UserVO> voPage = new Page<>(current, pageSize, userPage.getSize());
+        Page<UserVO> voPage = new Page<>(current, pageSize, userPage.getTotal());
         List<UserVO> userVOList = userService.getUserVOList(userPage.getRecords());
         voPage.setRecords(userVOList);
 
