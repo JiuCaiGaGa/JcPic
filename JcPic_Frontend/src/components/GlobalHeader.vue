@@ -13,7 +13,7 @@
         <a-menu
           v-model:selectedKeys="current"
           mode="horizontal"
-          :items="items"
+          :items="menus"
           @click="doMenuClick"
         />
       </a-col>
@@ -44,69 +44,51 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, h, ref } from 'vue'
-import { HomeOutlined, GithubOutlined, LogoutOutlined } from '@ant-design/icons-vue'
+import { computed, ref } from 'vue'
+import { LogoutOutlined } from '@ant-design/icons-vue'
 import { MenuProps, message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 import { userLogoutUsingPost } from '@/api/userController.ts'
 
 const loginUserStore = useLoginUserStore()
-
-// 原始菜单项
-const originItems = [
-  {
-    key: '/',
-    icon: () => h(HomeOutlined),
-    label: '主页',
-    title: '主页',
-  },
-  {
-    key: '/admin/userManage',
-    label: '用户管理',
-    title: '用户管理',
-  },
-  {
-    key: '/about',
-    label: '关于',
-    title: '关于',
-  },
-  {
-    key: 'JcGithub',
-    icon: () => h(GithubOutlined),
-    label: h(
-      'a',
-      { href: 'https://github.com/JiuCaiGaGa/JcPic', target: '_blank' },
-      '韭菜gaga的GitHub主页',
-    ),
-    title: 'JcGaG_GitHub',
-  },
-]
-
-const items = computed(() => filterMenus(originItems))
-
 const router = useRouter()
-// 对原始菜单项过滤
-const filterMenus = (menus = [] as MenuProps['items']) => {
-  return menus?.filter((menu) => {
-    if (menu?.key?.startsWith('/admin')) {
-      const loginUser = loginUserStore.loginUser
-      if(!loginUser || loginUser.userRole !== 'admin'){
+//  region 菜单项权限过滤
+import { routes } from '@/access/routes.ts'
+import checkAccess from '@/access/checkAccess.ts'
+
+// 把路由项转换为菜单项
+const menuToRouteItem = (item: any) => {
+  return {
+    key: item.key, // 用于路由的跳转
+    label: item.label,
+    title: item.title,
+    icon: item.icon ?? undefined,
+  }
+}
+
+// 过滤菜单项
+const items = computed(() => {
+  return routes
+    .filter((item) => {
+      if (item.meta?.hideInMenu) {
         return false
       }
-    }
-    return true
-  })
-}
+      console.log(item.meta?.access)
+      // 根据权限过滤菜单，有权限则返回 true，则保留该菜单
+      return checkAccess(loginUserStore.loginUser, item.meta?.access as string)
+    })
+    .map(menuToRouteItem) // 转换为菜单项格式
+})
+const menus = ref<MenuProps['items']>(items)
+// endregion
 
 /**
  * 路由跳转事件
  */
 
 const doMenuClick = ({ key }) => {
-  if (key !== 'JcGithub') {
-    router.push({ path: key })
-  }
+  router.push({ path: key })
 }
 
 /**

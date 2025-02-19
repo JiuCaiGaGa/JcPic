@@ -9,7 +9,7 @@ import BasicLayout from '@/layouts/BasicLayout.vue'
 // import { healthUsingGet } from '@/api/mainController.ts'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 
-// 功能移动至 access.ts
+// 功能移动至 @/access/index
 // const loginUserStore = useLoginUserStore();
 // loginUserStore.fetchLoginUser();
 
