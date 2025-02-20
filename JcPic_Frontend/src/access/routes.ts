@@ -25,7 +25,7 @@ export const routes = [
     label: '关于',
     title: '关于',
     meta: {
-      access: accessEnum.NOT_LOGIN,
+      access: [accessEnum.VIP, accessEnum.ADMIN],
     },
   },
   {

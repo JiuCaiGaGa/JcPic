@@ -74,7 +74,6 @@ const items = computed(() => {
       if (item.meta?.hideInMenu) {
         return false
       }
-      console.log(item.meta?.access)
       // 根据权限过滤菜单，有权限则返回 true，则保留该菜单
       return checkAccess(loginUserStore.loginUser, item.meta?.access as string)
     })
