@@ -46,7 +46,7 @@ const router = createRouter({
       name: '我的会员信息',
       component: MyVipPage,
       meta: {
-        access: accessEnum.VIP,
+        access: [accessEnum.VIP,accessEnum.ADMIN],
       },
     },
     {
