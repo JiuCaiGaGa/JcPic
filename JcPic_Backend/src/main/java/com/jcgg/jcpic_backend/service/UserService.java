@@ -16,6 +16,16 @@ import java.util.List;
 * @createDate 2025-02-17 17:00:32
 */
 public interface UserService extends IService<User> {
+
+    /**
+     * 是否为管理员
+     *
+     * @param user
+     * @return
+     */
+    boolean isAdmin(User user);
+
+
     /**
      *
      * @param userAccount 登陆用账户名

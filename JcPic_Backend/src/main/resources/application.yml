@@ -3,6 +3,14 @@ server:
   servlet:
     context-path: /api #上下文路径
 spring:
+#   region 如果不知道这里是干啥的请删除下面这两行
+  profiles:
+    active: local
+#   endregion
+  # 文件上传尺寸限制 默认限制1MB
+  servlet:
+    multipart:
+      max-file-size: 10MB
   application: # 指定Spring 应用的配置信息
     name: JcPic_backend
   datasource:
@@ -39,3 +47,13 @@ knife4j: # 接口文档
         api-rule: package
         api-rule-resources:
           - com.jcgg.jcpic_backend.controller
+
+
+# 对象存储配置（需要从腾讯云获取）   替换成你自己的
+cos:
+  client:
+    host: xxx  # 这里填写访问域名
+    secretId: xxx
+    secretKey: xxx
+    region: xxx # 存储桶的地区简称 https://cloud.tencent.com/document/product/436/6224
+    bucket: xxx # 存储桶名称

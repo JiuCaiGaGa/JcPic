@@ -37,6 +37,16 @@ import java.util.stream.Collectors;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         implements UserService {
 
+    /**
+     * 判断是否是管理员
+     * @param user 判断的用户
+     */
+    @Override
+    public boolean isAdmin(User user) {
+        return user != null && UserRoleEnum.ADMIN.getValue().equals(user.getUserRole());
+    }
+
+
     @Override
     public Long userRegister(String userAccount, String userPassword, String checkPassword) {
 
