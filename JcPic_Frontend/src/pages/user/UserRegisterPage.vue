@@ -6,7 +6,7 @@
       <a-form-item
         name="userAccount"
         :rules="[
-          { required: true, message: 'Please input your username!' },
+          { required: true, message: '请输入你的账户名!' },
           { min: 3, message: '账户格式不正确' },
         ]"
       >
@@ -16,7 +16,7 @@
       <a-form-item
         name="userPassword"
         :rules="[
-          { required: true, message: 'Please input your password!' },
+          { required: true, message: '请输入你的密码!' },
           { min: 8, message: '密码格式不正确' },
           { pattern: /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,}$/, message: '密码必须包含字母和数字' },
         ]"
@@ -27,7 +27,7 @@
       <a-form-item
         name="checkPassword"
         :rules="[
-          { required: true, message: 'Please input your password again!' },
+          { required: true, message: '请再次输入你的密码!' },
           { min: 8, message: '密码格式不正确' },
         ]"
       >
@@ -83,7 +83,8 @@ const handleSubmit = async (values: any) => {
 
 <style scoped>
 #userRegisterPage {
-  max-height: 360px;
+  font-size: 30px;
+  max-width: 360px;
   margin: 0 auto;
 }
 

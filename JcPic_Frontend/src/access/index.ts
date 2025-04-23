@@ -20,7 +20,6 @@ router.beforeEach(async (to, from, next) => {
     firstFetch = false
   }
   const needAccess = (to.meta?.access as string) ?? ACCESS_ENUM.ADMIN
-  // console.log(to.meta?.access)
   // 要跳转的页面必须要登陆
   if (needAccess !== ACCESS_ENUM.NOT_LOGIN) {
     // 如果没登陆，跳转到登录页面
@@ -30,7 +29,7 @@ router.beforeEach(async (to, from, next) => {
     }
     // 如果已经登陆了，但是权限不足，那么跳转到无权限页面
     if (!checkAccess(loginUser, needAccess)) {
-      // next('/noAuth')
+      next('/noAuth')
       return
     }
   }

@@ -1,8 +1,11 @@
 <template>
   <div id="userLoginPage">
-    <h2 class="title">JcPic _ 登陆页面</h2>
-    <div class="desc">欢迎使用</div>
-    <a-form :model="formState" name="basic" autocomplete="off" @finish="handleSubmit">
+    <div class="container">
+      <div class="textContent">
+        <h2 class="title">JcPic _ 登陆页面</h2>
+        <div class="desc">欢迎使用</div>
+      </div>
+      <a-form :model="formState" name="basic" autocomplete="off" @finish="handleSubmit">
       <a-form-item
         name="userAccount"
         :rules="[{ required: true, message: 'Please input your username!' }]"
@@ -28,6 +31,7 @@
         <a-button type="primary" html-type="submit" style="width: 100%">登录</a-button>
       </a-form-item>
     </a-form>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -66,7 +70,8 @@ const handleSubmit = async (values: any) => {
 
 <style scoped>
 #userLoginPage {
-  max-height: 360px;
+  font-size: 30px;
+  max-width: 360px;
   margin: 0 auto;
 }
 

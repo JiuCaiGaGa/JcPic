@@ -2,7 +2,7 @@
   <div id="userManagePage">
 
 <!--    region 搜索栏-->
-    <a-form :layout="inline" :model="searchParams" @finish="doSearch">
+    <a-form layout="inline" :model="searchParams" @finish="doSearch" class="search_form">
       <a-form-item label="账号">
         <a-input v-model:value="searchParams.userAccount" placeholder="输入账号" allow-clear/>
       </a-form-item>
@@ -14,7 +14,7 @@
       </a-form-item>
     </a-form>
 <!--    endregion-->
-    <div style="margin-top: 20px"/>
+    <div style="margin-bottom: 20px"/>
 <!--    region 表格-->
     <a-table
       :columns="columns"
@@ -42,7 +42,13 @@
           {{ dayjs(record.createTime).format('YYYY-MM-DD') }}
         </template>
         <template v-else-if="column.key === 'action'">
-          <a-button danger @click="doDelete(record.id)">删除</a-button>
+          <div v-if="record.userRole !== 'admin'">
+            <a-button danger @click="doDelete(record.id)">删除</a-button>
+          </div>
+          <div v-else-if="record.userRole === 'admin'">
+            <span>不可操作</span>
+          </div>
+
         </template>
       </template>
     </a-table>
@@ -152,6 +158,4 @@ const doDelete = async (id: number) => {
 </script>
 
 <style scoped>
-#homePage {
-}
 </style>

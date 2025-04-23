@@ -1,6 +1,6 @@
 // @ts-ignore
 /* eslint-disable */
-import request from '@/request.ts'
+import request from '@/request'
 
 /** userAdd POST /api/user/add */
 export async function userAddUsingPost(body: API.UserAddRequest, options?: { [key: string]: any }) {

@@ -1,7 +1,10 @@
 import { HomeOutlined , GithubOutlined} from '@ant-design/icons-vue'
 import { h } from 'vue'
 import accessEnum from '@/access/accessEnum.ts'
-
+import AddPicture from '@/pages/picture/AddPicture.vue'
+/*
+  页面顶端导航栏
+ */
 export const routes = [
   {
     key: '/',
@@ -19,6 +22,23 @@ export const routes = [
     meta: {
       access: accessEnum.ADMIN,
     },
+  },
+  {
+    key: '/admin/pictureManage',
+    label: '图片管理',
+    title: '图片管理',
+    meta: {
+      access: accessEnum.ADMIN,
+    },
+  },
+  {
+    key: '/add_picture',
+    label: '添加图片',
+    title: '添加图片',
+    component: AddPicture,
+    meta: {
+      access: accessEnum.USER,
+    }
   },
   {
     key: '/about',

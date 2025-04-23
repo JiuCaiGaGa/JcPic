@@ -4,9 +4,11 @@
       <a-layout-header class="header">
         <GlobalHeader />
       </a-layout-header>
-      <a-layout-content class="content">
-        <router-view />
-      </a-layout-content>
+      <a-layout>
+        <a-layout-content class="content">
+          <router-view />
+        </a-layout-content>
+      </a-layout>
       <a-layout-footer class="footer">
         <GithubOutlined />
         <a href="https://github.com/JiuCaiGaGa/JcPic" target="_blank">
@@ -19,7 +21,7 @@
 
 <script setup lang="ts">
 import GlobalHeader from '@/components/GlobalHeader.vue'
-import { GithubOutlined } from '@ant-design/icons-vue';
+import { GithubOutlined } from '@ant-design/icons-vue'
 </script>
 
 <style scoped>
@@ -35,6 +37,7 @@ import { GithubOutlined } from '@ant-design/icons-vue';
   background: linear-gradient(to right, #abcdef, #efefef);
   margin-bottom: 45px;
 }
+
 #basicLayout .footer {
   background: #f5f5f5;
   padding: 20px;

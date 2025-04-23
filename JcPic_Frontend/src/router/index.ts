@@ -5,7 +5,13 @@ import UserRegisterPage from '@/pages/user/UserRegisterPage.vue'
 import MyVipPage from '@/pages/vip/MyVipPage.vue'
 import UserManagePage from '@/pages/admin/UserManagePage.vue'
 import accessEnum from '@/access/accessEnum.ts'
-
+import NoAuth from '@/pages/NoAuth.vue'
+import AddPicture from '@/pages/picture/AddPicture.vue'
+import PictureManagePage from '@/pages/admin/PictureManagePage.vue'
+import PictureDetailPage from '@/pages/picture/PictureDetailPage.vue'
+/*
+  路由
+ */
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -42,12 +48,37 @@ const router = createRouter({
       },
     },
     {
+      path: '/admin/pictureManage',
+      name: '图片管理页面',
+      component: PictureManagePage,
+      meta: {
+        access : accessEnum.ADMIN,
+      },
+    },
+    {
       path: '/vip/myVIP',
       name: '我的会员信息',
       component: MyVipPage,
       meta: {
         access: [accessEnum.VIP,accessEnum.ADMIN],
       },
+    },
+    {
+      path: '/add_picture',
+      title: '图片模块',
+      component: AddPicture,
+      meta: {
+        access: accessEnum.USER,
+      }
+    },
+    {
+      path: '/picture/:id',
+      name: '图片详情',
+      component: PictureDetailPage,
+      props: true,
+      meta: {
+        access: accessEnum.NOT_LOGIN,
+      }
     },
     {
       path: '/about',
@@ -60,6 +91,20 @@ const router = createRouter({
         access: accessEnum.NOT_LOGIN,
       },
     },
+    {
+      path: '/noAuth',
+      name: '无权访问',
+      component: NoAuth,
+      meta: {
+        access: accessEnum.NOT_LOGIN,
+      }
+    },
+    // 添加通配符路由，匹配所有未定义的路径
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      component: NoAuth ,
+    }
   ],
 })
 
