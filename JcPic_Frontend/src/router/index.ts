@@ -6,9 +6,10 @@ import MyVipPage from '@/pages/vip/MyVipPage.vue'
 import UserManagePage from '@/pages/admin/UserManagePage.vue'
 import accessEnum from '@/access/accessEnum.ts'
 import NoAuth from '@/pages/NoAuth.vue'
-import AddPicture from '@/pages/picture/AddPicture.vue'
+import AddPicturePage from '@/pages/picture/AddPicturePage.vue'
 import PictureManagePage from '@/pages/admin/PictureManagePage.vue'
 import PictureDetailPage from '@/pages/picture/PictureDetailPage.vue'
+import AddPictureBatchPage from '@/pages/picture/AddPictureBatchPage.vue'
 /*
   路由
  */
@@ -66,9 +67,17 @@ const router = createRouter({
     {
       path: '/add_picture',
       title: '图片模块',
-      component: AddPicture,
+      component: AddPicturePage,
       meta: {
         access: accessEnum.USER,
+      }
+    },
+    {
+      path: '/add_picture/batch',
+      title: '图片模块',
+      component: AddPictureBatchPage,
+      meta: {
+        access: accessEnum.ADMIN,
       }
     },
     {

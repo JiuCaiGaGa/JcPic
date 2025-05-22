@@ -101,7 +101,7 @@ const total = ref(0)
 
 const searchParams = reactive<API.UserQueryRequest>({
   currentPage: 1,
-  pageSize: 3,
+  pageSize: 5,
   sortField: 'createTime',
   sortOrder: 'ascend', // 降序
 })

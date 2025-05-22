@@ -14,8 +14,8 @@ public class GlobalExceptionHandler { // 切点
      * 针对自定义异常的捕获
      * @param e 自定义异常
      */
-    @ExceptionHandler(BussinessException.class)
-    public BaseResponse<?> businessExceptionHandler(BussinessException e){
+    @ExceptionHandler(BusinessException.class)
+    public BaseResponse<?> businessExceptionHandler(BusinessException e){
         log.info("BusinessException",e);// 控制台打印日志
         return ResultUtils.error(e.getCode(),e.getMessage());
     }

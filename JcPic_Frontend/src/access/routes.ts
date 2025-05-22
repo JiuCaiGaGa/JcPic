@@ -1,7 +1,7 @@
 import { HomeOutlined , GithubOutlined} from '@ant-design/icons-vue'
 import { h } from 'vue'
 import accessEnum from '@/access/accessEnum.ts'
-import AddPicture from '@/pages/picture/AddPicture.vue'
+import AddPicture from '@/pages/picture/AddPicturePage.vue'
 /*
   页面顶端导航栏
  */

@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import { uploadPictureUsingPost } from '@/api/pictureController.ts'
 
-const msg = '图片上传组件,正在开发中.....'
+const msg = '方式1: 上传本地图片'
 import { ref } from 'vue'
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'

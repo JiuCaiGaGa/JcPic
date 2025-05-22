@@ -1,7 +1,6 @@
 package com.jcgg.jcpic_backend.aop;
 
 import com.jcgg.jcpic_backend.annotation.AuthCheck;
-import com.jcgg.jcpic_backend.exception.BussinessException;
 import com.jcgg.jcpic_backend.exception.ErrorCode;
 import com.jcgg.jcpic_backend.exception.ThrowUtils;
 import com.jcgg.jcpic_backend.model.entity.User;

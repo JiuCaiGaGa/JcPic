@@ -45,7 +45,7 @@
               {{ formatSize(picture.picSize) }}
             </a-descriptions-item>
           </a-descriptions>
-          <a-space wrap>
+          <a-space wrap v-if="picture.id">
             <a-button type="primary" @click="doDownload">
               免费下载
               <template #icon>
@@ -53,18 +53,27 @@
               </template>
             </a-button>
 
-            <a-button v-if="canEdit" type="default" @click="doEdit">
-              编辑
-              <template #icon>
-                <EditOutlined />
+            <a-button type="link" @click="handleReview(PIC_REVIEW_STATUS_ENUM.PASS)" v-if=" canEdit && picture.reviewStatus !== PIC_REVIEW_STATUS_ENUM.PASS"  >通过审核</a-button>
+
+            <a-popconfirm
+              title="确定要退回吗?"
+              ok-text="是"
+              cancel-text="否"
+              @confirm="confirmREJECT"
+            >
+              <a-button type="link"  v-if="canEdit && picture.reviewStatus !== PIC_REVIEW_STATUS_ENUM.REJECT" danger>退回</a-button>
+            </a-popconfirm>
+            <a-button v-if="canEdit" type="default" @click="doEdit">编辑<template #icon><EditOutlined />
               </template>
             </a-button>
-            <a-button v-if="canEdit" danger @click="doDelete">
-              删除
-              <template #icon>
-                <DeleteOutlined />
-              </template>
-            </a-button>
+            <a-popconfirm
+              title="确定要删除吗?"
+              ok-text="删除"
+              cancel-text="取消"
+              @confirm="confirmDelete"
+            >
+            <a-button v-if="canDelete" danger >删除<template #icon><DeleteOutlined /></template></a-button>
+            </a-popconfirm>
           </a-space>
         </a-card>
       </a-col>
@@ -73,13 +82,14 @@
 </template>
 
 <script setup lang="ts">
-import { deletePictureUsingPost, getPictureVoByIdUsingGet } from '@/api/pictureController.ts'
+import { deletePictureUsingPost, doPictureReviewUsingPost, getPictureVoByIdUsingGet } from '@/api/pictureController.ts'
 import { DeleteOutlined, EditOutlined, DownloadOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import { computed, onMounted, ref } from 'vue'
 import { downloadImage, formatSize } from '@/utils'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 import { useRouter } from 'vue-router'
+import { PIC_REVIEW_STATUS_ENUM } from '@/constants/picture.ts'
 
 interface Props {
   id: string | number
@@ -150,6 +160,34 @@ const doDelete = async () => {
 const doDownload = () => {
   downloadImage(picture.value.url)
 }
+
+// 改变审核状态
+const handleReview = async (reviewStatus: number) => {
+  const id = picture.value.id
+  if (!id) return
+  const reviewMessage = reviewStatus === PIC_REVIEW_STATUS_ENUM.PASS ? '管理员操作通过' : '管理员操作拒绝'
+  const res = await doPictureReviewUsingPost({
+    id: id,
+    reviewStatus,
+    reviewMessage,
+  })
+  if (res.data.code === 0) {
+    message.success('审核操作成功')
+    // 重新获取详情信息
+    fetchPictureDetail()
+  } else {
+    message.error('审核操作失败，' + res.data.message)
+  }
+}
+
+const confirmREJECT = (e: MouseEvent) => {
+  handleReview(PIC_REVIEW_STATUS_ENUM.REJECT);
+}
+const confirmDelete = (e: MouseEvent) => {
+  doDelete();
+  fetchPictureDetail();
+}
+
 </script>
 
 <style scoped>

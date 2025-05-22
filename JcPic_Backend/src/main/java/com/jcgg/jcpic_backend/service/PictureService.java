@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jcgg.jcpic_backend.model.dto.picture.PictureQueryRequest;
+import com.jcgg.jcpic_backend.model.dto.picture.PictureReviewRequest;
+import com.jcgg.jcpic_backend.model.dto.picture.PictureUploadByBatchRequest;
 import com.jcgg.jcpic_backend.model.dto.picture.PictureUploadRequest;
 import com.jcgg.jcpic_backend.model.entity.Picture;
 import com.jcgg.jcpic_backend.model.entity.User;
@@ -23,7 +25,7 @@ public interface PictureService extends IService<Picture> {
      * 上传图片
      */
 
-    PictureVO uploadPicture (MultipartFile multipartFile, PictureUploadRequest request, User loginuser);
+    PictureVO uploadPicture (Object inputSource, PictureUploadRequest request, User loginuser);
 
     /**
      * 获取查询对象
@@ -44,4 +46,26 @@ public interface PictureService extends IService<Picture> {
      * 校验图片
      */
     void validPicture(Picture picture);
+
+    /**
+     * 审核图片
+     */
+    void doPictureReview(PictureReviewRequest request,User loginuser);
+
+    /**
+     * 填充审核参数
+     */
+    void fillReviewParams(Picture picture, User loginUser);
+
+    /**
+     * 批量抓取和创建图片
+     * @param pictureUploadByBatchRequest
+     * @param loginUser
+     * @return 成功创建的图片数
+     */
+    Integer uploadPictureByBatch(
+            PictureUploadByBatchRequest pictureUploadByBatchRequest,
+            User loginUser
+    );
+
 }

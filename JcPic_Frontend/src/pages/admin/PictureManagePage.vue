@@ -1,5 +1,13 @@
 <template>
   <div id="pictureManagePage">
+    <a-flex justify="space-between">
+      <h2>创建图片</h2>
+      <a-space>
+        <a-button type="primary" href="/add_picture" target="_blank"> + 创建单张图片</a-button>
+        <a-button type="primary" href="/add_picture/batch" target="_blank" ghost> + 抓取多张图片</a-button>
+      </a-space>
+    </a-flex>
+    <a-divider/>
     <!--    region 搜索栏-->
     <a-form layout="inline" :model="searchParams" @finish="doSearch" class="search_form">
       <a-form-item label="关键词">
@@ -24,6 +32,16 @@
           allow-clear
         />
       </a-form-item>
+      <a-form-item label="审核状态" name="reviewStatus">
+        <a-select
+          v-model:value="searchParams.reviewStatus"
+          :options="PIC_REVIEW_STATUS_OPTIONS"
+          placeholder="请输入审核状态"
+          style="min-width: 180px"
+          allow-clear
+        />
+      </a-form-item>
+
       <a-form-item>
         <a-button type="primary" html-type="submit">搜索</a-button>
       </a-form-item>
@@ -49,23 +67,12 @@
           </a-space>
         </template>
         <template v-if="column.dataIndex === 'picInfo'">
-          <div>
-            格式：<strong>{{ record.picFormat }}</strong>
-          </div>
-          <div>
-            宽度：<strong>{{ record.picWidth }}</strong>
-          </div>
-          <div>
-            高度：<strong>{{ record.picHeight }}</strong>
-          </div>
-          <div>
-            宽高比：<strong>{{ record.picScale }}</strong>
-          </div>
-          <div>
-            大小：<strong>{{ (record.picSize / 1024).toFixed(2) }}KB</strong>
-          </div>
+          <div>格式：<strong>{{ record.picFormat }}</strong></div>
+          <div>宽度：<strong>{{ record.picWidth }}</strong></div>
+          <div>高度：<strong>{{ record.picHeight }}</strong></div>
+          <div>宽高比：<strong>{{ record.picScale }}</strong></div>
+          <div>大小：<strong>{{ (record.picSize / 1024).toFixed(2) }}KB</strong></div>
         </template>
-
         <template v-if="column.dataIndex === 'createTime'">
           {{ dayjs(record.createTime).format('YYYY-MM-DD') }}
         </template>
@@ -77,11 +84,17 @@
             >用户主页</a-button
           >
         </template>
+        <template v-if="column.dataIndex === 'reviewMessage'">
+          <div>审核状态：<strong>{{ PIC_REVIEW_STATUS_MAP[record.reviewStatus] }}</strong></div>
+          <div>审核信息：<strong>{{ record.reviewMessage }}</strong></div>
+          <div>审核人：<strong>{{ record.reviewerId }}</strong></div>
+          <div v-if="record.reviewTime">审核时间：<strong>{{ dayjs(record.reviewTime).format('YYYY-MM-DD') }}</strong></div>
+        </template>
         <template v-else-if="column.key === 'action'">
           <div v-if="record.pictureRole !== 'admin'">
-            <a-button type="link" :href="`/add_picture?id=${record.id}`" target="_blank"
-              >编辑</a-button
-            >
+            <a-button type="link" @click="handleReview(record,PIC_REVIEW_STATUS_ENUM.PASS)" v-if="record.reviewStatus !== PIC_REVIEW_STATUS_ENUM.PASS"  >通过审核</a-button>
+            <a-button type="link" @click="handleReview(record,PIC_REVIEW_STATUS_ENUM.REJECT)" v-if="record.reviewStatus !== PIC_REVIEW_STATUS_ENUM.REJECT" danger>退回</a-button>
+            <a-button type="link" :href="`/add_picture?id=${record.id}`" target="_blank">编辑</a-button>
             <a-button danger @click="doDelete(record.id)">删除</a-button>
           </div>
           <div v-else-if="record.pictureRole === 'admin'">
@@ -95,9 +108,14 @@
 </template>
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
-import { deletePictureUsingPost, listPictureByPageUsingPost } from '@/api/pictureController.ts'
+import {
+  deletePictureUsingPost,
+  doPictureReviewUsingPost,
+  listPictureByPageUsingPost
+} from '@/api/pictureController.ts'
 import { message } from 'ant-design-vue'
 import dayjs from 'dayjs'
+import { PIC_REVIEW_STATUS_ENUM, PIC_REVIEW_STATUS_MAP, PIC_REVIEW_STATUS_OPTIONS } from '@/constants/picture.ts'
 
 const columns = [
   {
@@ -134,6 +152,10 @@ const columns = [
     title: '用户id',
     dataIndex: 'userId',
     width: 80,
+  },
+  {
+    title: '审核信息',
+    dataIndex: 'reviewMessage',
   },
   {
     title: '创建时间',
@@ -209,6 +231,24 @@ const doDelete = async (id: number) => {
     message.error('删除失败')
   }
 }
+
+// 改变审核状态
+const handleReview = async (record: API.Picture, reviewStatus: number) => {
+  const reviewMessage = reviewStatus === PIC_REVIEW_STATUS_ENUM.PASS ? '管理员操作通过' : '管理员操作拒绝'
+  const res = await doPictureReviewUsingPost({
+    id: record.id,
+    reviewStatus,
+    reviewMessage,
+  })
+  if (res.data.code === 0) {
+    message.success('审核操作成功')
+    // 重新获取列表
+    fetchData()
+  } else {
+    message.error('审核操作失败，' + res.data.message)
+  }
+}
+
 </script>
 
 <style scoped></style>

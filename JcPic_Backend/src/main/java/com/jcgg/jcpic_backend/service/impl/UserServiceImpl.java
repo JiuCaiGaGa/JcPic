@@ -6,7 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jcgg.jcpic_backend.constant.UserConstant;
-import com.jcgg.jcpic_backend.exception.BussinessException;
+import com.jcgg.jcpic_backend.exception.BusinessException;
 import com.jcgg.jcpic_backend.exception.ErrorCode;
 import com.jcgg.jcpic_backend.exception.ThrowUtils;
 import com.jcgg.jcpic_backend.model.dto.user.UserQueryRequest;
@@ -132,7 +132,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
         if(user == null){
             log.info("User login failed.\nAcc:\t"+userAccount+"\npwd:\t" + userPassword+"\nencryptPwd:\t"+encryptPwd);
-            throw new BussinessException(ErrorCode.PARAMS_ERROR,"登录失败,请检查输入信息");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"登录失败,请检查输入信息");
         }
 
 

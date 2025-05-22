@@ -9,21 +9,21 @@ import lombok.Getter;
 * 异常详情见 ErrorCode 类
 * */
 @Getter
-public class BussinessException extends RuntimeException {
+public class BusinessException extends RuntimeException {
 
     // 错误码
     private final int code;
 
-    public BussinessException(int code, String message) {
+    public BusinessException(int code, String message) {
         super(message);
         this.code = code;
     }
-    public BussinessException(ErrorCode errorCode) {
+    public BusinessException(ErrorCode errorCode) {
         super(errorCode.getMessage());
         this.code = errorCode.getCode();
     }
 
-    public BussinessException(ErrorCode errorCode, String message) {
+    public BusinessException(ErrorCode errorCode, String message) {
         super(message);
         this.code = errorCode.getCode();
     }

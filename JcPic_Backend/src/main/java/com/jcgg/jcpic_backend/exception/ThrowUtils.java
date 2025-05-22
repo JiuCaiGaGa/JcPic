@@ -25,7 +25,7 @@ public class ThrowUtils {
      * @param errorCode 错误码
      */
     public static void throwIf(boolean condition, ErrorCode errorCode){
-        throwIf(condition,new BussinessException(errorCode));
+        throwIf(condition,new BusinessException(errorCode));
     };
 
     /**
@@ -35,6 +35,6 @@ public class ThrowUtils {
      * @param message 异常抛出自定义消息
      */
     public static void throwIf(boolean condition, ErrorCode errorCode, String message){
-        throwIf(condition,new BussinessException(errorCode,message));
+        throwIf(condition,new BusinessException(errorCode,message));
     };
 }
