@@ -1,5 +1,7 @@
 package com.jcgg.jcpic_backend.controller;
 
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jcgg.jcpic_backend.annotation.AuthCheck;
@@ -19,6 +21,9 @@ import com.jcgg.jcpic_backend.service.PictureService;
 import com.jcgg.jcpic_backend.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
@@ -39,6 +45,9 @@ public class PictureController {
     private PictureService pictureService;
     @Resource
     private UserService userService;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     /**
      * 上传图片（可重新上传）
@@ -181,11 +190,31 @@ public class PictureController {
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
         // 设为审核通过
         pictureQueryRequest.setReviewStatus(PictureReviewStatusEnum.PASS.getValue());
+        // 查询缓存
+        String queryCondition = JSONUtil.toJsonStr(pictureQueryRequest);
+        String hashKey = DigestUtils.md5DigestAsHex(queryCondition.getBytes());
+        String redisKey = String.format("jcPic:listPictureVOByPage:%s",hashKey);
+
+        ValueOperations<String, String> stringStringValueOperations = stringRedisTemplate.opsForValue();
+        String cacheValue = stringStringValueOperations.get(redisKey);
+        if(cacheValue != null){ // 命中缓存
+            // 反序列化
+            Page<PictureVO> cachedPage = JSONUtil.toBean(cacheValue, Page.class);
+            return ResultUtils.success(cachedPage);
+        }
+
         // 查询数据库
         Page<Picture> picturePage = pictureService.page(new Page<>(current, size),
                 pictureService.getQueryWrapper(pictureQueryRequest));
+        // 将查询结果写入缓存
+        Page<PictureVO> pictureVOPage = pictureService.getPictureVOPage(picturePage, request);
+        String jsonStr = JSONUtil.toJsonStr(pictureVOPage);
+
+        // 设置随机过期时间
+        int cacheTimeOut = 300 + RandomUtil.randomInt(0,300);
+        stringStringValueOperations.set(redisKey,jsonStr,cacheTimeOut, TimeUnit.SECONDS);
         // 获取封装类
-        return ResultUtils.success(pictureService.getPictureVOPage(picturePage, request));
+        return ResultUtils.success(pictureVOPage);
     }
 
     /**

@@ -47,7 +47,7 @@
               <img
                 style="height: 180px; object-fit: cover; width: 100%"
                 :alt="picture.name"
-                :src="picture.url"
+                :src=" picture.thumbnailUrl ?? picture.url"
               />
               <!-- 悬浮遮罩 -->
               <div class="overlay">

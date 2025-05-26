@@ -1,5 +1,6 @@
 package com.jcgg.jcpic_backend.manager;
 
+import cn.hutool.core.io.FileUtil;
 import com.jcgg.jcpic_backend.config.CosClientConfig;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.model.COSObject;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -53,6 +56,27 @@ public class CosManager {
         PutObjectRequest putObjectRequest = new PutObjectRequest(cosClientConfig.getBucket(), key, file);
         PicOperations picOperations = new PicOperations();
         picOperations.setIsPicInfo(1);
+        List<PicOperations.Rule> rules = new ArrayList<>();
+
+        // 文件压缩 -> webp
+        String webpKey = FileUtil.mainName(key) + ".webp";
+        PicOperations.Rule compressRule = new PicOperations.Rule();
+        compressRule.setFileId(webpKey);
+        compressRule.setBucket(cosClientConfig.getBucket());
+        compressRule.setRule("imageMogr2/format/webp");
+        rules.add(compressRule);
+
+        // 缩略图处理
+        if(file.length() > 2 * 1024){
+            PicOperations.Rule thumbnailRule = new PicOperations.Rule();
+            thumbnailRule.setBucket(cosClientConfig.getBucket());
+            String thumbnailKey = FileUtil.mainName(key) + "_thumbnailUrl." + FileUtil.getSuffix(key);
+            thumbnailRule.setFileId(thumbnailKey);
+            thumbnailRule.setRule(String.format( "imageMogr2/thumbnail/%sx%s>",256,256));
+            rules.add(thumbnailRule);
+        }
+
+        picOperations.setRules(rules);
         putObjectRequest.setPicOperations(picOperations);
         return cosClient.putObject(putObjectRequest);
     }
