@@ -7,7 +7,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
-//@EnableAsync
+@EnableAsync
 @MapperScan("com.jcgg.jcpic_backend.mapper") // mapper 扫描文件夹
 @EnableAspectJAutoProxy(exposeProxy = true) // 暴露代理
 public class JcPicBackendApplication {
