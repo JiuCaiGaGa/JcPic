@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jcgg.jcpic_backend.exception.BusinessException;
 import com.jcgg.jcpic_backend.exception.ErrorCode;
 import com.jcgg.jcpic_backend.exception.ThrowUtils;
+import com.jcgg.jcpic_backend.manager.CosManager;
 import com.jcgg.jcpic_backend.manager.upload.FilePictureUpload;
 import com.jcgg.jcpic_backend.manager.upload.PictureUploadTemplate;
 import com.jcgg.jcpic_backend.manager.upload.UrlPictureUpload;
@@ -31,6 +32,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.BeanUtils;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -58,6 +60,9 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
     @Resource
     UserService userService;
 
+    @Resource
+    CosManager cosManager;
+
     @Override
     public PictureVO uploadPicture(Object inputSource, PictureUploadRequest request, User loginuser) {
         // 校验参数
@@ -69,6 +74,8 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
         Long picID = null;
         if (request != null) { // 更新图片
             picID = request.getId();
+            Picture oldPicture = getById(picID);
+            clearPictureFile(oldPicture);
         }
         if (picID != null) {
             Picture oldPic = this.getById(picID);
@@ -363,6 +370,25 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
         return uploadCount;
     }
 
+    @Async
+    @Override
+    public void clearPictureFile(Picture oldPicture) {
+        // 判断该图片是否被多条记录使用
+        String pictureUrl = oldPicture.getUrl();
+        long count = this.lambdaQuery()
+                .eq(Picture::getUrl, pictureUrl)
+                .count();
+        // 有不止一条记录用到了该图片，不清理
+        if (count > 1) {
+            return;
+        }
+        cosManager.deleteObject(oldPicture.getUrl());
+        // 清理缩略图
+        String thumbnailUrl = oldPicture.getThumbnailUrl();
+        if (StrUtil.isNotBlank(thumbnailUrl)) {
+            cosManager.deleteObject(thumbnailUrl);
+        }
+    }
 
 
 }

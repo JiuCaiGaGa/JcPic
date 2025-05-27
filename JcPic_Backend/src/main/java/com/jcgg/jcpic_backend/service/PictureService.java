@@ -58,6 +58,11 @@ public interface PictureService extends IService<Picture> {
     void fillReviewParams(Picture picture, User loginUser);
 
     /**
+     * 清除旧照片
+     * @param oldPicture 旧照片
+     */
+    public void clearPictureFile(Picture oldPicture);
+    /**
      * 批量抓取和创建图片
      * @param pictureUploadByBatchRequest
      * @param loginUser
