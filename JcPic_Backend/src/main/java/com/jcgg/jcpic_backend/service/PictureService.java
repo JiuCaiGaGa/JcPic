@@ -3,10 +3,9 @@ package com.jcgg.jcpic_backend.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.jcgg.jcpic_backend.model.dto.picture.PictureQueryRequest;
-import com.jcgg.jcpic_backend.model.dto.picture.PictureReviewRequest;
-import com.jcgg.jcpic_backend.model.dto.picture.PictureUploadByBatchRequest;
-import com.jcgg.jcpic_backend.model.dto.picture.PictureUploadRequest;
+import com.jcgg.jcpic_backend.exception.ErrorCode;
+import com.jcgg.jcpic_backend.exception.ThrowUtils;
+import com.jcgg.jcpic_backend.model.dto.picture.*;
 import com.jcgg.jcpic_backend.model.entity.Picture;
 import com.jcgg.jcpic_backend.model.entity.User;
 import com.jcgg.jcpic_backend.model.vo.PictureVO;
@@ -73,4 +72,16 @@ public interface PictureService extends IService<Picture> {
             User loginUser
     );
 
+    /**
+     * 校验空间图片权限
+     *
+     * @param loginUser
+     * @param picture
+     */
+    void checkPictureAuth(User loginUser, Picture picture);
+
+    void deletePicture(long pictureId, User loginUser);
+
+
+    void editPicture(PictureEditRequest pictureEditRequest, User loginUser);
 }

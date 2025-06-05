@@ -2,11 +2,13 @@ package com.jcgg.jcpic_backend.model.dto.file;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 上传图片的结果
  */
 @Data
-public class UploadPictureResult {  
+public class UploadPictureResult implements Serializable {
   
     /**  
      * 图片地址  
