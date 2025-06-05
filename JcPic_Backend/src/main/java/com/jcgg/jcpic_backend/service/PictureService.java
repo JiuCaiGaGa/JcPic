@@ -3,13 +3,10 @@ package com.jcgg.jcpic_backend.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.jcgg.jcpic_backend.exception.ErrorCode;
-import com.jcgg.jcpic_backend.exception.ThrowUtils;
 import com.jcgg.jcpic_backend.model.dto.picture.*;
 import com.jcgg.jcpic_backend.model.entity.Picture;
 import com.jcgg.jcpic_backend.model.entity.User;
 import com.jcgg.jcpic_backend.model.vo.PictureVO;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 
