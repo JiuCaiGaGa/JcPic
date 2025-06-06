@@ -1,15 +1,18 @@
 <template>
   <div id="AddPicturePage">
     <h2 style="margin-bottom: 20px">{{ route.query?.id ? '修改' : '创建' }}图片</h2>
+    <a-typography-paragraph v-if="spaceId" type="secondary">
+      保存至空间：<a :href="`/space/${spaceId}`" target="_blank">{{ spaceId }}</a>
+    </a-typography-paragraph>
     <!-- 选择上传方式 -->
     <a-tabs v-model:activeKey="uploadType">
       <a-tab-pane key="file" tab="本地文件上传">
-        <!--通过URL上传外部图片组件-->
-        <PictureUpload :picture="picture" :onSuccess="onSuccess" />
+        <!--通过本地上传外部图片组件-->
+        <PictureUpload :picture="picture" :spaceId="spaceId" :onSuccess="onSuccess" />
       </a-tab-pane>
       <a-tab-pane key="url" tab="外部图片引入" force-rende r>
-        <!--    图片上传组件-->
-        <UrlPictureUpload :picture="picture" :onSuccess="onSuccess"/>
+        <!--    URL上传组件-->
+        <UrlPictureUpload :picture="picture" :spaceId="spaceId" :onSuccess="onSuccess"/>
       </a-tab-pane>
     </a-tabs>
 
@@ -57,7 +60,7 @@
 </template>
 <script setup lang="ts">
 import PictureUpload from '@/components/picture/PictureUpload.vue'
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { message } from 'ant-design-vue'
 import {
   editPictureUsingPost,
@@ -76,7 +79,10 @@ const route = useRoute()
 
 // 标签页选择参数
 const uploadType =  ref<'file' | 'url'>('file')
-
+// 空间 id
+const spaceId = computed(() => {
+  return route.query?.spaceId
+})
 /**
  * 图片上传成功
  * @param newPicture
@@ -96,6 +102,7 @@ const handleSubmit = async (values: any) => {
 
   const res = await editPictureUsingPost({
     id: picID,
+    spaceId: spaceId.value,
     ...values,
   })
   //   操作成功

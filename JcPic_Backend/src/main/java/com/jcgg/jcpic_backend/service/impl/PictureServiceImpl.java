@@ -98,8 +98,7 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
         Long picID = null;
         if (request != null) { // 更新图片
             picID = request.getId();
-            Picture oldPicture = getById(picID);
-            clearPictureFile(oldPicture);
+//            Picture oldPicture = getById(picID);
         }
         if (picID != null) {
             Picture oldPic = this.getById(picID);
@@ -178,7 +177,7 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
             ThrowUtils.throwIf(!update,ErrorCode.OPERATION_ERROR,"额度更新失败");
             return pic;
         });
-
+//        this.clearPictureFile();
         return PictureVO.objToVo(pic);
     }
 
@@ -228,7 +227,7 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
         queryWrapper.eq(ObjUtil.isNotEmpty(id), "id", id);
         queryWrapper.eq(ObjUtil.isNotEmpty(userId), "userId", userId);
         queryWrapper.eq(ObjUtil.isNotEmpty(spaceId), "spaceId", spaceId);
-        queryWrapper.isNull(nullSpaceId, "nullSpaceId");
+        queryWrapper.isNull(nullSpaceId, "spaceId");
         queryWrapper.like(StrUtil.isNotBlank(name), "name", name);
         queryWrapper.like(StrUtil.isNotBlank(introduction), "introduction", introduction);
         queryWrapper.like(StrUtil.isNotBlank(picFormat), "picFormat", picFormat);

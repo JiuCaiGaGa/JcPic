@@ -29,6 +29,7 @@ import type { UploadChangeParam, UploadProps } from 'ant-design-vue'
 
 interface Props {
   picture?: API.PictureVO
+  spaceId?: number
   onSuccess?: (newPicture: API.PictureVO) => void
 }
 
@@ -39,6 +40,8 @@ const handleUpload = async ({file} : any) => {
   const params = props.picture ? {id: props.picture.id } : {}
   try {
     const res = await uploadPictureUsingPost(params,{ }, file )
+    const params: API.PictureUploadRequest = props.picture ? { id: props.picture.id } : {}
+    params.spaceId = props.spaceId;
     if (res.data.code === 0 && res.data.data ) {
       message.success("上传函数调用成功")
       // 通知父组件上传成功

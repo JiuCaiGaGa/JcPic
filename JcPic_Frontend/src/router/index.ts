@@ -10,6 +10,10 @@ import AddPicturePage from '@/pages/picture/AddPicturePage.vue'
 import PictureManagePage from '@/pages/admin/PictureManagePage.vue'
 import PictureDetailPage from '@/pages/picture/PictureDetailPage.vue'
 import AddPictureBatchPage from '@/pages/picture/AddPictureBatchPage.vue'
+import MySpacePage from '@/pages/MySpacePage.vue'
+import AddSpacePage from '@/pages/AddSpacePage.vue'
+import SpaceManagePage from '@/pages/admin/SpaceManagePage.vue'
+import SpaceDetailPage from '@/pages/spacce/SpaceDetailPage.vue'
 /*
   路由
  */
@@ -57,6 +61,14 @@ const router = createRouter({
       },
     },
     {
+      path: '/admin/spaceManage',
+      name: '空间管理',
+      component: SpaceManagePage,
+      meta: {
+        access : accessEnum.ADMIN,
+      },
+    },
+    {
       path: '/vip/myVIP',
       name: '我的会员信息',
       component: MyVipPage,
@@ -88,6 +100,31 @@ const router = createRouter({
       meta: {
         access: accessEnum.NOT_LOGIN,
       }
+    },
+    {
+      path: '/add_space',
+      name: '创建空间',
+      component: AddSpacePage,
+      meta :{
+        access: accessEnum.USER,
+      }
+    },
+    {
+      path: '/my_space',
+      name: '我的空间',
+      component: MySpacePage,
+      meta: {
+        access: accessEnum.USER,
+      }
+    },
+    {
+      path: '/space/:id',
+      name: '空间详情',
+      component: SpaceDetailPage,
+      meta: {
+        access: accessEnum.USER,
+      },
+      props: true,
     },
     {
       path: '/about',
