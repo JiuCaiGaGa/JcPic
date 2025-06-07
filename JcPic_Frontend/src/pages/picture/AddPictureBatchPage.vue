@@ -13,7 +13,7 @@
           :min="1"
           :max="15"
           allow-clear
-          :autosize="{ minRows: 3, maxRows: 5 }"
+          :autoSize="{ minRows: 3, maxRows: 5 }"
         />
       </a-form-item>
       <a-form-item label="名称前缀" name="namePrefix">
