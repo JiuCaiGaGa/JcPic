@@ -70,7 +70,12 @@ public class PictureVO implements Serializable {
     /**  
      * 图片格式  
      */  
-    private String picFormat;  
+    private String picFormat;
+
+    /**
+     * 图片主色调
+     */
+    private String picColor;
   
     /**  
      * 用户 id  
@@ -135,5 +140,7 @@ public class PictureVO implements Serializable {
         // 类型不同，需要转换  
         pictureVO.setTags(JSONUtil.toList(picture.getTags(), String.class));  
         return pictureVO;  
-    }  
+    }
+
+
 }

@@ -169,18 +169,21 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
             pic.setUpdateTime(new Date());
             pic.setId(picID);
         }
+        // 开启事务
         Long finalSpaceId = spaceId;
         transactionTemplate.execute(status -> {
             // 插入数据
             boolean result = this.saveOrUpdate(pic);
-            ThrowUtils.throwIf(!result,ErrorCode.OPERATION_ERROR,"图片上传失败");
-            // 更新空间额度
-            boolean update = spaceService.lambdaUpdate()
-                    .eq(Space::getId, finalSpaceId)
-                    .setSql("totalSize = totalSize + " + pic.getPicSize())
-                    .setSql("totalCount= totalCount + 1")
-                    .update();
-            ThrowUtils.throwIf(!update,ErrorCode.OPERATION_ERROR,"额度更新失败");
+            ThrowUtils.throwIf(!result,ErrorCode.OPERATION_ERROR,"图片上传失败，数据库操作失败");
+            if(finalSpaceId != null){
+                // 更新空间额度
+                boolean update = spaceService.lambdaUpdate()
+                        .eq(Space::getId, finalSpaceId)
+                        .setSql("totalSize = totalSize + " + pic.getPicSize())
+                        .setSql("totalCount= totalCount + 1")
+                        .update();
+                ThrowUtils.throwIf(!update,ErrorCode.OPERATION_ERROR,"额度更新失败");
+            }
             return pic;
         });
 //        this.clearPictureFile();

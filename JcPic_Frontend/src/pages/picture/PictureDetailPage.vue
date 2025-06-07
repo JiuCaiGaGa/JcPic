@@ -44,6 +44,19 @@
             <a-descriptions-item label="大小">
               {{ formatSize(picture.picSize) }}
             </a-descriptions-item>
+            <a-descriptions-item label="主色调">
+              <a-space>
+                {{ picture.picColor ?? '-' }}
+                <div
+                  v-if="picture.picColor"
+                  :style="{
+                    width: '16px',
+                    height: '16px',
+                    backgroundColor: toHexColor(picture.picColor),
+                  }"
+                />
+              </a-space>
+            </a-descriptions-item>
           </a-descriptions>
           <a-space wrap v-if="picture.id">
             <a-button type="primary" @click="doDownload">
@@ -53,16 +66,21 @@
               </template>
             </a-button>
 
-            <a-button type="link" @click="handleReview(PIC_REVIEW_STATUS_ENUM.PASS)" v-if=" canEdit && picture.reviewStatus !== PIC_REVIEW_STATUS_ENUM.PASS"  >通过审核</a-button>
 
-            <a-popconfirm
-              title="确定要退回吗?"
-              ok-text="是"
-              cancel-text="否"
-              @confirm="confirmREJECT"
-            >
-              <a-button type="link"  v-if="canEdit && picture.reviewStatus !== PIC_REVIEW_STATUS_ENUM.REJECT" danger>退回</a-button>
-            </a-popconfirm>
+            <div v-if="picture.reviewStatus!=PIC_REVIEW_STATUS_ENUM.REVIEWING">
+              <a-button type="link" @click="handleReview(PIC_REVIEW_STATUS_ENUM.PASS)" v-if=" canEdit && picture.reviewStatus !== PIC_REVIEW_STATUS_ENUM.PASS"  >通过审核</a-button>
+              <a-popconfirm
+                title="确定要退回吗?"
+                ok-text="是"
+                cancel-text="否"
+                @confirm="confirmREJECT"
+              >
+                <a-button type="link"  v-if="canEdit && picture.reviewStatus !== PIC_REVIEW_STATUS_ENUM.REJECT" danger>退回</a-button>
+              </a-popconfirm>
+            </div>
+            <a-button :icon="h(ShareAltOutlined)" type="primary" ghost @click="doShare">
+              分享
+            </a-button>
             <a-button v-if="canEdit" type="default" @click="doEdit">编辑<template #icon><EditOutlined />
               </template>
             </a-button>
@@ -78,19 +96,20 @@
         </a-card>
       </a-col>
     </a-row>
+    <ShareModal ref="shareModalRef" :link="shareLink" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { deletePictureUsingPost, doPictureReviewUsingPost, getPictureVoByIdUsingGet } from '@/api/pictureController.ts'
-import { DeleteOutlined, EditOutlined, DownloadOutlined } from '@ant-design/icons-vue'
+import { DeleteOutlined, EditOutlined, DownloadOutlined, ShareAltOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
-import { computed, onMounted, ref } from 'vue'
-import { downloadImage, formatSize } from '@/utils'
+import { computed, h, onMounted, ref } from 'vue'
+import { downloadImage, formatSize,toHexColor } from '@/utils'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 import { useRouter } from 'vue-router'
 import { PIC_REVIEW_STATUS_ENUM } from '@/constants/picture.ts'
-
+import ShareModal from '@/components/ShareModal.vue'
 interface Props {
   id: string | number
 }
@@ -194,7 +213,17 @@ const confirmDelete = (e: MouseEvent) => {
   doDelete();
   fetchPictureDetail();
 }
-
+// ----- 分享操作 ----
+const shareModalRef = ref()
+// 分享链接
+const shareLink = ref<string>()
+// 分享
+const doShare = () => {
+  shareLink.value = `${window.location.protocol}//${window.location.host}/picture/${picture.value.id}`
+  if (shareModalRef.value) {
+    shareModalRef.value.openModal()
+  }
+}
 </script>
 
 <style scoped>

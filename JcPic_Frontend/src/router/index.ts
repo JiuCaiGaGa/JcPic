@@ -14,6 +14,7 @@ import MySpacePage from '@/pages/MySpacePage.vue'
 import AddSpacePage from '@/pages/AddSpacePage.vue'
 import SpaceManagePage from '@/pages/admin/SpaceManagePage.vue'
 import SpaceDetailPage from '@/pages/spacce/SpaceDetailPage.vue'
+import SearchPicturePage from '@/pages/picture/SearchPicturePage.vue'
 /*
   路由
  */
@@ -125,6 +126,14 @@ const router = createRouter({
         access: accessEnum.USER,
       },
       props: true,
+    },
+    {
+      path: '/search_picture',
+      name: '图片搜索',
+      component: SearchPicturePage,
+      meta: {
+        access: accessEnum.NOT_LOGIN
+      }
     },
     {
       path: '/about',

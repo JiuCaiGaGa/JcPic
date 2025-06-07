@@ -22,9 +22,4 @@ public class ImageSearchApiFacade {
         List<ImageSearchResult> imageList = GetImageListApi.getImageList(imageFirstUrl);
         return imageList;
     }
-
-    public static void main(String[] args) {
-        List<ImageSearchResult> imageList = searchImage("https://www.codefather.cn/logo.png");
-        System.out.println("结果列表" + imageList);
-    }
 }
