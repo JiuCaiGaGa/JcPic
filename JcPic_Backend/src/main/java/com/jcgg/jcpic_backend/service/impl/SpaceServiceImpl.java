@@ -48,8 +48,7 @@ public class SpaceServiceImpl extends ServiceImpl<SpaceMapper, Space>
     @Resource
     private TransactionTemplate transactionTemplate;
 
-//    @Resource
-//    private TransactionTemplate transactionTemplate;
+
 
     @Override
     public long addSpace(SpaceAddRequest spaceAddRequest, User loginUser) {
