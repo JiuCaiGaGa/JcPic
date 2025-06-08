@@ -15,6 +15,7 @@ import AddSpacePage from '@/pages/AddSpacePage.vue'
 import SpaceManagePage from '@/pages/admin/SpaceManagePage.vue'
 import SpaceDetailPage from '@/pages/spacce/SpaceDetailPage.vue'
 import SearchPicturePage from '@/pages/picture/SearchPicturePage.vue'
+import SpaceAnalyzePage from '@/pages/SpaceAnalyzePage.vue'
 /*
   路由
  */
@@ -126,6 +127,14 @@ const router = createRouter({
         access: accessEnum.USER,
       },
       props: true,
+    },
+    {
+      path: '/space_analyze',
+      name: '空间分析',
+      component: SpaceAnalyzePage,
+      meta: {
+        access: accessEnum.ADMIN,
+      }
     },
     {
       path: '/search_picture',
