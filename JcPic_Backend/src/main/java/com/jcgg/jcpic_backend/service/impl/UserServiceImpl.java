@@ -9,6 +9,7 @@ import com.jcgg.jcpic_backend.constant.UserConstant;
 import com.jcgg.jcpic_backend.exception.BusinessException;
 import com.jcgg.jcpic_backend.exception.ErrorCode;
 import com.jcgg.jcpic_backend.exception.ThrowUtils;
+import com.jcgg.jcpic_backend.manager.auth.StpKit;
 import com.jcgg.jcpic_backend.model.dto.user.UserQueryRequest;
 import com.jcgg.jcpic_backend.model.entity.User;
 import com.jcgg.jcpic_backend.model.enums.UserRoleEnum;
@@ -23,7 +24,6 @@ import org.springframework.util.DigestUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -137,14 +137,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
 
         // 保存信息
-        request.getSession().setAttribute(UserConstant.USER_LOGIN_STATUS,user);
+        request.getSession().setAttribute(UserConstant.USER_LOGIN_STATE,user);
+        // 记录用户登录态到 Sa-token，便于空间鉴权时使用，注意保证该用户信息与 SpringSession 中的信息过期时间一致Add commentMore actions
+        StpKit.SPACE.login(user.getId());
+        StpKit.SPACE.getSession().set(UserConstant.USER_LOGIN_STATE, user);
         return this.getLoginUserVO(user);
     }
 
     @Override
     public User getLoginUser(HttpServletRequest request) {
         // 判断是否已登录
-        User user =(User) request.getSession().getAttribute(UserConstant.USER_LOGIN_STATUS);
+        User user =(User) request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE);
         ThrowUtils.throwIf(
                 user == null || user.getId() == null,
                 ErrorCode.NOT_LOGIN_ERROR
@@ -160,13 +163,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public boolean userLogout(HttpServletRequest request) {
         // 判断是否已登录
-        Object userObj = request.getSession().getAttribute(UserConstant.USER_LOGIN_STATUS);
+        Object userObj = request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE);
         ThrowUtils.throwIf(
                 userObj == null,
                 ErrorCode.OPERATION_ERROR,"未登录"
         );
         // 移除登录态
-        request.getSession().removeAttribute(UserConstant.USER_LOGIN_STATUS);
+        request.getSession().removeAttribute(UserConstant.USER_LOGIN_STATE);
 
         return true;
     }

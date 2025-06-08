@@ -5,7 +5,7 @@ package com.jcgg.jcpic_backend.constant;
  */
 public interface UserConstant {
     // 用户登录状态
-    String USER_LOGIN_STATUS = "user_login_status";
+    String USER_LOGIN_STATE = "user_login_status";
 
     // region 用户组权限
     // 1. 默认普通用户

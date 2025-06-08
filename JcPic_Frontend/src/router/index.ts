@@ -16,6 +16,7 @@ import SpaceManagePage from '@/pages/admin/SpaceManagePage.vue'
 import SpaceDetailPage from '@/pages/spacce/SpaceDetailPage.vue'
 import SearchPicturePage from '@/pages/picture/SearchPicturePage.vue'
 import SpaceAnalyzePage from '@/pages/SpaceAnalyzePage.vue'
+import SpaceUserManagePage from '@/pages/admin/SpaceUserManagePage.vue'
 /*
   路由
  */
@@ -77,6 +78,11 @@ const router = createRouter({
       meta: {
         access: [accessEnum.VIP,accessEnum.ADMIN],
       },
+    },{
+      path: '/spaceUserManage/:id',
+      name: '空间成员管理',
+      component: SpaceUserManagePage,
+      props: true,
     },
     {
       path: '/add_picture',

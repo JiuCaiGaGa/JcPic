@@ -9,6 +9,7 @@ import com.jcgg.jcpic_backend.constant.UserConstant;
 import com.jcgg.jcpic_backend.exception.BusinessException;
 import com.jcgg.jcpic_backend.exception.ErrorCode;
 import com.jcgg.jcpic_backend.exception.ThrowUtils;
+import com.jcgg.jcpic_backend.manager.auth.SpaceUserAuthManager;
 import com.jcgg.jcpic_backend.model.dto.space.*;
 import com.jcgg.jcpic_backend.model.entity.Space;
 import com.jcgg.jcpic_backend.model.entity.User;
@@ -37,6 +38,8 @@ public class SpaceController {
     @Resource
     private SpaceService spaceService;
 
+    @Resource
+    private SpaceUserAuthManager spaceUserAuthManager;
     @PostMapping("/add")
     public BaseResponse<Long> addSpace(@RequestBody SpaceAddRequest spaceAddRequest, HttpServletRequest request) {
         ThrowUtils.throwIf(spaceAddRequest == null, ErrorCode.PARAMS_ERROR);
@@ -118,8 +121,12 @@ public class SpaceController {
         // 查询数据库
         Space space = spaceService.getById(id);
         ThrowUtils.throwIf(space == null, ErrorCode.NOT_FOUND_ERROR);
+        SpaceVO spaceVO = spaceService.getSpaceVO(space, request);
+        User loginUser = userService.getLoginUser(request);
+        List<String> permissionList = spaceUserAuthManager.getPermissionList(space, loginUser);
+        spaceVO.setPermissionList(permissionList);
         // 获取封装类
-        return ResultUtils.success(spaceService.getSpaceVO(space, request));
+        return ResultUtils.success(spaceVO);
     }
 
     /**

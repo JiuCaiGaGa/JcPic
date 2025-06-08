@@ -11,6 +11,33 @@ spring:
   servlet:
     multipart:
       max-file-size: 10MB
+  # 空间图片分表
+  shardingsphere:
+    datasource:
+      names: jc_pic
+      jc_pic:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/jc_pic
+        username: root
+        password: 123456
+    rules:
+      sharding:
+        tables:
+          picture:
+            actual-data-nodes: jc_pic.picture # 动态分表
+            table-strategy:
+              standard:
+                sharding-column: spaceId
+                sharding-algorithm-name: picture_sharding_algorithm  # 使用自定义分片算法
+        sharding-algorithms:
+          picture_sharding_algorithm:
+            type: CLASS_BASED
+            props:
+              strategy: standard
+              algorithmClassName: com.jcgg.jcpic_backend.manager.sharding.PictureShardingAlgorithm
+    props:
+      sql-show: true
   application: # 指定Spring 应用的配置信息
     name: JcPic_backend
   datasource:
@@ -32,6 +59,7 @@ mybatis-plus: # Mybatis Plus 配置信息
     map-underscore-to-camel-case: false # 取消下划线转驼峰
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 开发环境下 打印日志 FIXME
   global-config:
+    enable-sql-runner: true
     # 全局配置
     db-config:
       # 逻辑删除配置
